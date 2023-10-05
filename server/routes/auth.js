@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 
-const { signup, signin, forgotPassword, resetPassword} = require('../controllers/auth');
+import { signup, signin, forgotPassword, resetPassword } from '../controllers/auth';
 
 router.get('/', (req, res) => {
     return res.json({

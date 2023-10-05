@@ -3,8 +3,9 @@ import { hashPassword, comparePassword } from "../helpers/auth";
 import jwt from "jsonwebtoken";
 import nanoid from "nanoid";
 // sendgrid
-require("dotenv").config();
-const sgMail = require("@sendgrid/mail");
+import dotenv from 'dotenv';
+dotenv.config(); 
+import sgMail from '@sendgrid/mail';
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 export const signup = async (req, res) => {

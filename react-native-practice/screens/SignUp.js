@@ -1,24 +1,35 @@
 import {StyleSheet, Text, View, TextInput, TouchableOpacity, Image} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '../context/auth';
 
 const SignUp = ({navigation}) => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [state, setState] = useContext(AuthContext);
 
     const handleSubmit = async () => {
         if (name === '' || email === '' || password === '') {
             alert('All fields are required');
             return;
         }
-        await axios.post('http:localhost:8001/api/signup', {
+        const resp = await axios.post('https://53ea-2601-200-4401-ca50-1c0a-7c24-e474-62e0.ngrok-free.app/api/signup', {
             name,
             email,
             password
         });
-        alert('Sign up successful');
+        if (resp.data.error) {
+            alert(resp.data.error)
+        } else {
+            setState(resp.data);
+            await AsyncStorage.setItem("auth-rn", JSON.stringify(resp.data));
+            alert('Sign up successful');
+            navigation.navigate('Home');
+        }
     };
 
     return (
