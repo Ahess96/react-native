@@ -17,7 +17,7 @@ const SignUp = ({navigation}) => {
             alert('All fields are required');
             return;
         }
-        const resp = await axios.post('https://53ea-2601-200-4401-ca50-1c0a-7c24-e474-62e0.ngrok-free.app/api/signup', {
+        const resp = await axios.post('https://462d-2601-200-4100-b590-9841-2a5e-4f2f-f434.ngrok-free.app/api/signup', {
             name,
             email,
             password

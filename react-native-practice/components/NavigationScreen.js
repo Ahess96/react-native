@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SignUp from './screens/SignUp';
-import SignIn from './screens/SignIn';
-import { AuthContext } from './context/auth';
-import Home from './screens/Home';
+import SignUp from '../screens/SignUp';
+import SignIn from '../screens/SignIn';
+import { AuthContext } from '../context/auth';
+import Home from '../screens/Home';
 import HeaderTabs from './header/HeaderTabs';
 import Account from '../screens/Account';
 import Links from '../screens/Links';
