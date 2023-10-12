@@ -4,17 +4,19 @@ import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useContext, useEffect, useState} from "react";
 import { AuthContext } from "../context/auth";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 const Account = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
+    const [image, setImage] = useState({url: "https://cdn.pixabay.com/photo/2015/01/08/18/25/desk-593327_960_720.jpg", public_id: ""});
     const [state, setState] = useState('');
 
     useEffect(() => {
         if (state) {
-            const {name, email, role} = state.user;
+            const {name, email, role, image} = state.user;
             setName(name);
             setEmail(email);
             setRole(role);
@@ -35,14 +37,27 @@ const Account = ({navigation}) => {
             alert("Sign in successful");
             navigation.navigate('Home');
         }
-    }
+    };
+
+    const handleUpload = () => {};
 
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
             <View style={{marginVertical: 100}}>
                 <View style={styles.imageContainer}>
-                    <Image source={require('../assets/favicon.png')} style={styles.imageStyles} />
+                    {image && image.url ? <Image source={{uri: image.url}} style={styles.imageStyles} /> : (
+                        <TouchableOpacity onPress={() => handleUpload()}>
+                            <FontAwesome5 name="camera" size={25} color="darkmagenta" />
+                        </TouchableOpacity>
+                    )}
                 </View>
+                {image && image.url ? (
+                    <TouchableOpacity onPress={() => handleUpload()}>
+                        <FontAwesome5 name="camera" size={25} color="darkmagenta" style={styles.iconStyle} />
+                    </TouchableOpacity>
+                ) : (
+                    <></>
+                )}
                 <Text style={styles.signupText}>{name}</Text>
                 <Text style={styles.emailText}>{email}</Text>
                 <Text style={styles.roleText}>{role}</Text>
@@ -59,6 +74,11 @@ const Account = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
+    iconStyle: {
+        marginTop: -5, 
+        marginBottom: 10, 
+        alignSelf: "center"
+    },
     container: {
         felx: 1,
         justifyContent: 'center'
