@@ -5,14 +5,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useContext, useEffect, useState} from "react";
 import { AuthContext } from "../context/auth";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import * as ImagePicker from "expo-image-picker";
 
 const Account = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
-    const [image, setImage] = useState({url: "https://cdn.pixabay.com/photo/2015/01/08/18/25/desk-593327_960_720.jpg", public_id: ""});
-    const [state, setState] = useState('');
+    const [image, setImage] = useState({url: "", public_id: ""});
+    const [state, setState] = useContext(AuthContext);
+    const [uploadImage, setUploadImage] = useState("");
 
     useEffect(() => {
         if (state) {
@@ -39,13 +41,37 @@ const Account = ({navigation}) => {
         }
     };
 
-    const handleUpload = () => {};
+    const handleUpload = async () => {
+        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert("Camera access is required");
+            return;
+        }
+
+        let pickerResult = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+            base64: true,
+        });
+        if (pickerResult.canceled === true) {
+            return;
+        }
+
+        let base64Image = `data:image/jpg;base64,${pickerResult.base64}`;
+        setUploadImage(base64Image);
+
+        const {data} = await axios.post("http://localhost:8000/api/upload-image", {
+            image: base64Image,
+        });
+        console.log("UPLOADED RESPONSE =>", data);
+    };
 
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
             <View style={{marginVertical: 100}}>
                 <View style={styles.imageContainer}>
-                    {image && image.url ? <Image source={{uri: image.url}} style={styles.imageStyles} /> : (
+                    {image && image.url ? <Image source={{uri: image.url}} style={styles.imageStyles} /> :
+                    uploadImage ? <Image source={{uri: uploadImage}} style={styles.imageStyles} /> : (
                         <TouchableOpacity onPress={() => handleUpload()}>
                             <FontAwesome5 name="camera" size={25} color="darkmagenta" />
                         </TouchableOpacity>
