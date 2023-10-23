@@ -8,6 +8,7 @@ import HeaderTabs from './header/HeaderTabs';
 import Account from '../screens/Account';
 import Links from '../screens/Links';
 import Post from '../screens/Post';
+import ForgotPassword from '../screens/ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ const NavigationScreen = () => {
                     <>
                         <Stack.Screen name="SignIn" component={SignIn} />
                         <Stack.Screen name="SignUp" component={SignUp} />
+                        <Stack.Screen name = "ForgotPassword" component={ForgotPassword} />
                     </>
                 )
             }

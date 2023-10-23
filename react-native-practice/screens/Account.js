@@ -27,18 +27,21 @@ const Account = ({navigation}) => {
     }, [state]);
 
     const handleSubmit = async () => {
-        if (email === '' || password === '') {
-            alert('All fields required');
-            return;
-        }
-        const resp = await axios.post('https://localhost:8000/api/signin', {email, password});
-        if (resp.data.error) {
-            alert(resp.data.error);
-        } else {
-            setState(resp.data);
-            await AsyncStorage.setItem('auth-rn', JSON.stringify(resp.data));
-            alert("Sign in successful");
-            navigation.navigate('Home');
+        try {
+            let storedData = await AsyncStorage.getItem("auth-rn");
+            const user = JSON.parse(storedData);
+            console.log(user)
+            const resp = await axios.post("http://localhost:8000/api/update-password", {password, user});
+            const data = resp.data;
+            if (data.error) {
+                alert(data.error)
+            } else {
+                alert("Password updated successfully");
+                setPassword("");
+            }
+        } catch (error) {
+            alert("Password update failed");
+            console.log(error);
         }
     };
 

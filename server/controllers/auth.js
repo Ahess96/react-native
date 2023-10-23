@@ -189,3 +189,26 @@ export const uploadImage = async (req, res) => {
     console.log(err);
   }
 };
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const {password} = req.body;
+    console.log(req.body.user.user._id);
+    if (password && password.length < 6) {
+      return res.json({
+        error: "Password is required and should be min 6 chars long",
+      });
+    } else {
+      // update db
+      const hashedPassword = await hashPassword(password);
+      const user = await User.findByIdAndUpdate(req.body.user.user._id, {
+        password: hashedPassword,
+      });
+      user.password = undefined;
+      user.secret = undefined;
+      return res.json(user);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
