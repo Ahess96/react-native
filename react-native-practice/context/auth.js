@@ -21,11 +21,12 @@ const AuthProvider = ({children}) => {
     // handle expired token or 401 error
     axios.interceptors.response.use(
         async function (response) {
+            console.log(response)
             return response;
         },
         async function (error) {
             let res = error.response;
-            if (res.status === 401 && res.config && !res.config__isRetryRequest) {
+            if (res?.status === 401 && res.config && !res.config__isRetryRequest) {
                 await AsyncStorage.removeItem("auth-rn");
                 setState({user: null, token: ""});
                 navigation.navigate("SignIn");

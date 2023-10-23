@@ -22,6 +22,7 @@ const Account = ({navigation}) => {
             setName(name);
             setEmail(email);
             setRole(role);
+            setImage(image)
         }
     }, [state]);
 
@@ -30,7 +31,7 @@ const Account = ({navigation}) => {
             alert('All fields required');
             return;
         }
-        const resp = await axios.post('https://462d-2601-200-4100-b590-9841-2a5e-4f2f-f434.ngrok-free.app/api/signin', {email, password});
+        const resp = await axios.post('https://localhost:8000/api/signin', {email, password});
         if (resp.data.error) {
             alert(resp.data.error);
         } else {
@@ -60,11 +61,22 @@ const Account = ({navigation}) => {
         let base64Image = `data:image/jpg;base64,${pickerResult.base64}`;
         setUploadImage(base64Image);
 
+        let storedData = await AsyncStorage.getItem("auth-rn");
+        const parsed = JSON.parse(storedData);
+
         const {data} = await axios.post("http://localhost:8000/api/upload-image", {
             image: base64Image,
+            user: parsed.user
         });
         console.log("UPLOADED RESPONSE =>", data);
-    };
+        const stored = JSON.parse(await AsyncStorage.getItem("auth-rn"));
+        stored.user = data;
+        await AsyncStorage.setItem("auth-rn", JSON.stringify(stored));
+        // update context
+        setState({...state, user: data});
+        setImage(data.image);
+        alert("Profile image saved");
+    };    
 
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
