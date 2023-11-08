@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, {useState} from "react";
+import axios from 'axios';
 
 const ForgotPassword = ({navigation}) => {
     const [email, setEmail] = useState("");
@@ -8,8 +9,37 @@ const ForgotPassword = ({navigation}) => {
     const [resetCode, setResetCode] = useState("");
     const [visible, setVisible] = useState(false);
 
-    const handleSubmit = async () => {};
-    const handlePasswordReset = async () => {};
+    const handleSubmit = async () => {
+        if (!email) {
+            alert("Email is required");
+            return;
+        }
+        try {
+            const {data} = await axios.post("http://localhost:8000/api/forgot-password", { email });
+            if (data.error) alert(data.error);
+            else {
+                setVisible(true);
+                alert("Enter the password reset code");
+            }
+        } catch (err) {
+            console.log(err);
+            alert("Error sending email. Try again.");
+        }
+    };
+
+    const handlePasswordReset = async () => {
+        try {
+            const { data } = await axios.post("http://localhost:8000/api/reset-password", { email, resetCode, password });
+            if (data.error) alert(data.error);
+            else {
+                alert("Now you can login with your new password");
+                navigation.navigate("SignIn");
+            }
+        } catch (err) {
+            console.log(err);
+            alert("Password reset failed. Try again.");
+        }
+    };
 
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
