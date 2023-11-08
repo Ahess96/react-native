@@ -11,6 +11,10 @@ const linkSchema = new mongoose.Schema(
             type: String,
             trim: true,
             required: true,
+        },
+        views: {
+            type: Number,
+            default: 0
         }
     },
     { timestamps: true }
