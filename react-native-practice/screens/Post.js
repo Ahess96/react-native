@@ -1,12 +1,34 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import { StyleSheet, Text, SafeAreaView, View, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import FooterList from "../components/footer/FooterList";
+import axios from 'axios';
+import { LinkContext } from '../context/link';
 
 const Post = () => {
     const [link, setLink] = useState("");
     const [title, setTitle] = useState("");
+    const [links, setLinks] = useState(LinkContext);
 
-    const handleSubmit = () => console.log("title and link => ", title, link);
+    const handleSubmit = () => {
+        if (link === '' || title === '') {
+            alert("Paste url and give it a Title");
+            return;
+        }
+        try {
+            const { data } = axios.post("http://localhost:8000/api/post-link", {
+                link,
+                title,
+            });
+            console.log("data =>", data);
+            setLinks([data, ...links]);
+            setTimeout(() => {
+                alert("Link posted");
+                navigation.navigate("Home");
+            }, 500);
+        } catch (err) {
+            console.log(err);
+        }
+    };
     
     return (
         <SafeAreaView style={styles.container}>
